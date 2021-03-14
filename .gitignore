@@ -1,0 +1,9 @@
+.idea/*
+**/*.pyc
+build/*
+dist/*
+.eggs
+.coverage
+*.iml
+venv/*
+.DS_Store
