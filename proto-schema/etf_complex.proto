@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message etf_complex {
+    etf_date date = 1;
+    double open=2;
+    double high=3;
+    double low=4;
+    double close=5;
+    int64 volume=6;
+    int64 openint=7;
+}
+
+message etf_date {
+    string date = 1;
+}

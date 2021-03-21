@@ -1,9 +1,8 @@
-import confluent_kafka
 from confluent_kafka import SerializingProducer
 from confluent_kafka.serialization import StringSerializer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.protobuf import ProtobufSerializer
-from kafka_proto_api.protos.etf_pb2 import etf
+
 
 class ProtoKafkaProducer:
     def __init__(self,config_env):
@@ -34,7 +33,7 @@ class ProtoKafkaProducer:
             'auto.register.schemas': self.config['auto.register.schemas'],
         }
 
-        return ProtobufSerializer(etf, schema_registry_client, conf=_proto_conf)
+        return ProtobufSerializer(self.config['proto_msg_type'], schema_registry_client, conf=_proto_conf)
 
     def produce(self, kafka_msg, kafka_key):
         try:

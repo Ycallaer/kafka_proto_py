@@ -2,40 +2,54 @@ from kafka_proto_api.producer.proto_producer import ProtoKafkaProducer
 from kafka_proto_api.config.configuration import getConfigForEnv
 import arrow
 from kafka_proto_api.protos import etf_pb2
+from kafka_proto_api.protos import etf_complex_pb2
 import csv
 from decimal import Decimal
 
-# csv file name
-filename = "resources/etf.csv"
 
-# initializing the titles and rows list
-fields = []
-rows = []
+def load_data_file(filename):
+    rows = []
+    fields = []
+    with open(filename, 'r') as csvfile:
+        # creating a csv reader object
+        csvreader = csv.reader(csvfile)
+        fields = next(csvreader)
 
+        for row in csvreader:
+            rows.append(row)
+    print("Total no. of rows: %d" % (csvreader.line_num))
+    return rows
 
 
 def main():
     print("Initializing the kafka producer")
     producer = ProtoKafkaProducer(config_env=getConfigForEnv("local"))
-    filepath = "../resources/etf.csv"
+    producer_complex = ProtoKafkaProducer(config_env=getConfigForEnv("local_complex"))
 
-    # reading csv file
-    with open(filename, 'r') as csvfile:
-        # creating a csv reader object
-        csvreader = csv.reader(csvfile)
+    data_set=load_data_file(filename="resources/etf.csv")
 
-        # extracting field names through first row
-        fields = next(csvreader)
+    for data_element in data_set:
+        etf = etf_pb2.etf(date=data_element[0],
+                          open=Decimal(data_element[1]),
+                          high=Decimal(data_element[2]),
+                          low=Decimal(data_element[3]),
+                          close=Decimal(data_element[4]),
+                          volume=int(data_element[5]),
+                          openint=int(data_element[6]))
 
-        # extracting each data row one by one
-        for row in csvreader:
-            rows.append(row)
-            etf = etf_pb2.etf(date=row[0], open=Decimal(row[1]), high=Decimal(row[2]), low=Decimal(row[3]), close=Decimal(row[4]), volume=int(row[5]), openint=int(row[6]))
-            utc = str(arrow.now().timestamp)
-            producer.produce(kafka_msg=etf, kafka_key=utc)
-            #time.sleep(1)
+        etf_complex_data = etf_complex_pb2.etf_date(date=data_element[0])
 
-        print("Total no. of rows: %d" % (csvreader.line_num))
+        etf_complex = etf_complex_pb2.etf_complex(date=etf_complex_data,
+                          open=Decimal(data_element[1]),
+                          high=Decimal(data_element[2]),
+                          low=Decimal(data_element[3]),
+                          close=Decimal(data_element[4]),
+                          volume=int(data_element[5]),
+                          openint=int(data_element[6]))
+
+        utc = str(arrow.now().timestamp)
+        producer.produce(kafka_msg=etf, kafka_key=utc)
+        producer_complex.produce(kafka_msg=etf_complex, kafka_key=utc)
 
 
 if __name__=="__main__":
