@@ -3,6 +3,7 @@ from kafka_proto_api.config.configuration import getConfigForEnv
 import arrow
 from kafka_proto_api.protos import etf_pb2
 from kafka_proto_api.protos import etf_complex_pb2
+from kafka_proto_api.protos import etf_http_ref_pb2
 import csv
 from decimal import Decimal
 
@@ -25,6 +26,7 @@ def main():
     print("Initializing the kafka producer")
     producer = ProtoKafkaProducer(config_env=getConfigForEnv("local"))
     producer_complex = ProtoKafkaProducer(config_env=getConfigForEnv("local_complex"))
+    producer_http_ref = ProtoKafkaProducer(config_env=getConfigForEnv("local_http_ref"))
 
     data_set=load_data_file(filename="resources/etf.csv")
 
@@ -47,9 +49,18 @@ def main():
                           volume=int(data_element[5]),
                           openint=int(data_element[6]))
 
+        etf_http =etf_http_ref_pb2.etf_http_ref(date=data_element[0],
+                          open=Decimal(data_element[1]),
+                          high=Decimal(data_element[2]),
+                          low=Decimal(data_element[3]),
+                          close=Decimal(data_element[4]),
+                          volume=int(data_element[5]),
+                          openint=int(data_element[6]))
+
         utc = str(arrow.now().timestamp)
         producer.produce(kafka_msg=etf, kafka_key=utc)
         producer_complex.produce(kafka_msg=etf_complex, kafka_key=utc)
+        producer_http_ref.produce(kafka_msg=etf_http, kafka_key=utc)
 
 
 if __name__=="__main__":
