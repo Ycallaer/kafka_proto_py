@@ -48,6 +48,5 @@ config = {
 }
 
 
-
 def getConfigForEnv(environment):
     return config[environment]

@@ -28,7 +28,7 @@ def main():
     producer_complex = ProtoKafkaProducer(config_env=getConfigForEnv("local_complex"))
     producer_http_ref = ProtoKafkaProducer(config_env=getConfigForEnv("local_http_ref"))
 
-    data_set=load_data_file(filename="resources/etf.csv")
+    data_set = load_data_file(filename="resources/etf.csv")
 
     for data_element in data_set:
         etf = etf_pb2.etf(date=data_element[0],
@@ -42,20 +42,20 @@ def main():
         etf_complex_data = etf_complex_pb2.etf_date(date=data_element[0])
 
         etf_complex = etf_complex_pb2.etf_complex(date=etf_complex_data,
-                          open=Decimal(data_element[1]),
-                          high=Decimal(data_element[2]),
-                          low=Decimal(data_element[3]),
-                          close=Decimal(data_element[4]),
-                          volume=int(data_element[5]),
-                          openint=int(data_element[6]))
+                                                  open=Decimal(data_element[1]),
+                                                  high=Decimal(data_element[2]),
+                                                  low=Decimal(data_element[3]),
+                                                  close=Decimal(data_element[4]),
+                                                  volume=int(data_element[5]),
+                                                  openint=int(data_element[6]))
 
-        etf_http =etf_http_ref_pb2.etf_http_ref(date=data_element[0],
-                          open=Decimal(data_element[1]),
-                          high=Decimal(data_element[2]),
-                          low=Decimal(data_element[3]),
-                          close=Decimal(data_element[4]),
-                          volume=int(data_element[5]),
-                          openint=int(data_element[6]))
+        etf_http = etf_http_ref_pb2.etf_http_ref(date=data_element[0],
+                                                 open=Decimal(data_element[1]),
+                                                 high=Decimal(data_element[2]),
+                                                 low=Decimal(data_element[3]),
+                                                 close=Decimal(data_element[4]),
+                                                 volume=int(data_element[5]),
+                                                 openint=int(data_element[6]))
 
         utc = str(arrow.now().timestamp)
         producer.produce(kafka_msg=etf, kafka_key=utc)
@@ -63,5 +63,5 @@ def main():
         producer_http_ref.produce(kafka_msg=etf_http, kafka_key=utc)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

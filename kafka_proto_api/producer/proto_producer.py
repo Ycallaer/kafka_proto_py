@@ -5,7 +5,7 @@ from confluent_kafka.schema_registry.protobuf import ProtobufSerializer
 
 
 class ProtoKafkaProducer:
-    def __init__(self,config_env):
+    def __init__(self, config_env):
         self.config = config_env
         self.topic_name = self.config["kafka_produce_topic"]
 
@@ -41,9 +41,9 @@ class ProtoKafkaProducer:
                                   value=kafka_msg,
                                   key=kafka_key,
                                   on_delivery=self.on_delivery
-            )
+                                  )
 
             self.producer.flush()
 
         except Exception as e:
-            print("Error during producing to kafka topic. Stacktrace is %s",e)
+            print("Error during producing to kafka topic. Stacktrace is %s", e)
