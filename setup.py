@@ -7,6 +7,7 @@ class GenerateBindings(build_py):
     os.system('echo generating bindings')
     os.system('protoc -I=proto-schema --python_out=kafka_proto_api/protos proto-schema/etf.proto')
     os.system('protoc -I=proto-schema --python_out=kafka_proto_api/protos proto-schema/etf_complex.proto')
+    os.system('protoc -I=proto-schema --python_out=kafka_proto_api/protos proto-schema/etf_http_ref.proto')
     os.system('echo generated bindings')
 
 setup(name='kafka_proto_py',

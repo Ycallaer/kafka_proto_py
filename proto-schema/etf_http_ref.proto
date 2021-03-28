@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "google/protobuf/descriptor.proto";
+
+message etf_http_ref {
+    option (term_source) = TERM_SOURCE_FIBO;
+    option (term_source_ref) = "https://en.wikipedia.org/wiki/ISO_8601";
+
+    string date = 1;
+    double open=2;
+    double high=3;
+    double low=4;
+    double close=5;
+    int64 volume=6;
+    int64 openint=7;
+}
+
+enum TermSource {
+    TERM_SOURCE_UNSPECIFIED = 0;
+    TERM_SOURCE_ONE = 1;
+    TERM_SOURCE_FIBO = 2;
+    TERM_SOURCE_ISO = 3;
+    TERM_SOURCE_ISO20022 = 4;
+    TERM_SOURCE_FIX = 5;
+    TERM_SOURCE_FPML = 6;
+}
+
+extend google.protobuf.MessageOptions {
+    string coding_scheme = 55002;
+    TermSource term_source = 55003;
+    string term_source_ref = 55004;
+    string msg_term_link = 55005;
+}
+
+extend google.protobuf.FieldOptions {
+    bool is_identifier = 56002;
+    string external_schema = 56003;
+    string field_term_link = 56004;
+}
