@@ -1,0 +1,19 @@
+{
+    "name": "etf-simple-2-elk",
+    "config": {
+        "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+        "tasks.max": "1",
+        "topics": "etf_dummy_data",
+        "connection.url": "http://es01:9200",
+        "type.name": "_doc",
+        "value.converter": "io.confluent.connect.protobuf.ProtobufConverter",
+        "value.converter.schemas.enable": "false",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schemas.enable" : "false",
+        "schema.ignore": "true",
+        "key.ignore": "true",
+        "auto.create.indices.at.start":"true",
+        "write.method":"insert"
+    }
+}
