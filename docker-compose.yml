@@ -1,8 +1,7 @@
----
 version: '2'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-zookeeper:${CONFLUENT_DIST_VERSION}
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -12,7 +11,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-server:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-server:${CONFLUENT_DIST_VERSION}
     hostname: broker
     container_name: broker
     depends_on:
@@ -41,7 +40,7 @@ services:
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-schema-registry:${CONFLUENT_DIST_VERSION}
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -54,10 +53,12 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   connect:
-    #image: cnfldemos/cp-server-connect-datagen:0.4.0-6.1.0
     build:
       context: ./docker
       dockerfile: DockerfileConnect
+      args:
+        CONFLUENT_DISTRO_REPO: ${CONFLUENT_DISTRO_REPO}
+        CONFLUENT_DIST_VERSION: ${CONFLUENT_DIST_VERSION} 
     hostname: connect
     container_name: connect
     depends_on:
@@ -81,14 +82,14 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-6.1.0.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-${CONFLUENT_DIST_VERSION}.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-enterprise-control-center:${CONFLUENT_DIST_VERSION}
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -111,7 +112,7 @@ services:
       PORT: 9021
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-ksqldb-server:${CONFLUENT_DIST_VERSION}
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -134,7 +135,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-ksqldb-cli:${CONFLUENT_DIST_VERSION}
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -144,7 +145,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/ksqldb-examples:${CONFLUENT_DIST_VERSION}
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -166,7 +167,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:6.1.0
+    image: ${CONFLUENT_DISTRO_REPO}/cp-kafka-rest:${CONFLUENT_DIST_VERSION}
     depends_on:
       - broker
       - schema-registry
@@ -180,16 +181,8 @@ services:
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
-  postgressdb:
-    image: "postgres:11"
-    container_name: "postgress_kafka"
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-    ports:
-      - "54320:5432"
-
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    image: ${ELK_DISTRO_REPO}/elasticsearch/elasticsearch:${ELK_DISTRIBUTION_VERSION}
     container_name: es01
     environment:
       - bootstrap.memory_lock=true
@@ -204,7 +197,7 @@ services:
       - 9300:9300
 
   kib01:
-    image: docker.elastic.co/kibana/kibana:7.12.0
+    image: ${ELK_DISTRO_REPO}/kibana/kibana:${ELK_DISTRIBUTION_VERSION}
     depends_on:
       - es01
     container_name: kib01
@@ -213,3 +206,35 @@ services:
     environment:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+  
+  influxdb:
+    image: ${INFLUXDB_DISTRO_REPO}influxdb:${INFLUXDB_DISTRIBUTION_VERSION}
+    ports:
+      - 18086:8086
+      - 18083:8083
+      - 18090:8090
+    hostname: influxdb
+    container_name: influxdb
+    environment:
+      INFLUXDB_DATA_ENGINE: tsm1
+      INFLUXDB_REPORTING_DISABLED: "false"
+
+  mysqldb:
+    image: mysql:${MYSQL_DISTRIBUTION_VERSION}
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'mysqldb'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'user_pwd'
+      MYSQL_ROOT_PASSWORD: 'zEqWV1TvO7Lc0MxK33pP'
+    ports:
+      - 3306:3306
+
+  # postgressdb:
+  #   image: "postgres:11"
+  #   container_name: "postgress_kafka"
+  #   environment:
+  #     POSTGRES_HOST_AUTH_METHOD: "trust"
+  #   ports:
+  #     - "54320:5432"
+
