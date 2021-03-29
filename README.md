@@ -49,6 +49,10 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
 If you want you can install additional kafka connectors by editing the file in `docker/DockerfileConnect`.
 To make the maintenance easier, we install connectors through the command `confluent-hub install`.
 
+## Changing image versions and repos
+If you want to change the versions of certain images or change the repo from where you want to pull (in case you have mirrored
+the images), you can edit the `.env` file, which is present in the root directory.
+
 ## Querying the data 
 If you want to verify if the data is in elasticsearch you will need to create an index. This can be done from the 
 kibana console, which is reachable from the URL `http://localhost:5601`

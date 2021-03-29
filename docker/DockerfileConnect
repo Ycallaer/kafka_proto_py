@@ -1,6 +1,9 @@
-FROM confluentinc/cp-kafka-connect:6.1.0
+ARG CONFLUENT_DISTRO_REPO
+ARG CONFLUENT_DIST_VERSION
+FROM ${CONFLUENT_DISTRO_REPO}/cp-kafka-connect:${CONFLUENT_DIST_VERSION}
 
 ENV CONNECT_PLUGIN_PATH="/usr/share/java,/usr/share/confluent-hub-components"
 
 RUN  confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 RUN  confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:latest
+RUN  confluent-hub install --no-prompt confluentinc/kafka-connect-influxdb:latest
