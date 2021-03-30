@@ -1,0 +1,20 @@
+{
+    "name" : "etf-complex-2-influxdb",
+    "config" : {
+        "connector.class":"io.confluent.influxdb.InfluxDBSinkConnector",
+        "errors.retry.timeout":"3600000",
+        "errors.log.include.messages":"true",
+        "topics":"etf_dummy_data_complex",
+        "tasks.max":"1",
+        "errors.retry.delay.max.ms":"60000",
+        "influxdb.db":"etf-dummy-data-raw",
+        "measurement.name.format":"dummy_data_complex_raw",
+        "influxdb.url":"http://influxdb:8086",
+        "value.converter": "io.confluent.connect.protobuf.ProtobufConverter",
+        "value.converter.schemas.enable": "false",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schemas.enable" : "false",
+        "errors.log.enable":"true"
+        }
+    }

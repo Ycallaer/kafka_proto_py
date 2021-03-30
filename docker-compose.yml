@@ -220,7 +220,7 @@ services:
       INFLUXDB_REPORTING_DISABLED: "false"
 
   mysqldb:
-    image: mysql:${MYSQL_DISTRIBUTION_VERSION}
+    image: ${MYSQL_DISTRIBUTION_REPO}mysql:${MYSQL_DISTRIBUTION_VERSION}
     restart: always
     environment:
       MYSQL_DATABASE: 'mysqldb'
