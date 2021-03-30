@@ -27,14 +27,15 @@ docker-compose -f docker-compose.yml up -d
 The following technologies will be started:
 * Confluent center and all related technologies
 * ElasticSearch and Kibana
-* Postgresql
+* MySql
+* InfluxDB
 
 ## Running the python producer
 The following script needs to be executed:
 ```python
 .../kafka_proto_py/kafka_proto_api/start_producer.py
 ```
-You will need to set the working directory to the root of the project
+You will need to set the working directory to the root of the project. 
 
 ## Running the kafka connector
 The repo also contains an example of a kafka connector under the folder `kafka-connect`.
@@ -44,10 +45,14 @@ You can run the following command from the `kafka-connect directory`
 ```bash
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '@etf-2-elk.json'
 ```
+Additional connectors have been added and can be run with the above command. Don't forget to alter the data input.
 
 ## Installing additional connectors
 If you want you can install additional kafka connectors by editing the file in `docker/DockerfileConnect`.
 To make the maintenance easier, we install connectors through the command `confluent-hub install`.
+
+If `confluent-hub` is not present I suggest you download the individual zip files, place them in the docker directory
+and unzip them. Using the `ADD` command in docker, you can add the individual directories.
 
 ## Changing image versions and repos
 If you want to change the versions of certain images or change the repo from where you want to pull (in case you have mirrored
