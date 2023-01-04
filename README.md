@@ -65,6 +65,19 @@ kibana console, which is reachable from the URL `http://localhost:5601`
 Once the index is created you can create the dev tool to query the data as per the screenshot
 ![screenshot](docu_img/elasticsearch_index.JPG)
 
+## Ksql DB
+If you want to use Ksql Db you will need to exec into the docker image of the ksqldb-cli.
+From here you can start the interactive query mode by using the command:
+```commandline
+ksql http://ksqldb-server:8088
+```
+
+Before starting your query sessions here are some values you might set before starting to query:
+```
+SET 'ksql.streams.cache.max.bytes.buffering' = '10000000';
+SET 'auto.offset.reset' = 'earliest';
+```
+
 ## Contributing
 If you want to contribute, please abide by the following rules:
 * Create a feature branch and add your changes
