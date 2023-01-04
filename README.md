@@ -78,6 +78,11 @@ SET 'ksql.streams.cache.max.bytes.buffering' = '10000000';
 SET 'auto.offset.reset' = 'earliest';
 ```
 
+If you have a complex schema in protobuf and want to create a stream on top you need to specify VALUE_SCHEMA_FULL_NAME and set it to the root message
+```
+CREATE STREAM etf_dummy_data_complex_stream WITH (KAFKA_TOPIC='etf_dummy_data_complex',VALUE_FORMAT='PROTOBUF',VALUE_SCHEMA_FULL_NAME='etf_complex');
+```
+
 ## Contributing
 If you want to contribute, please abide by the following rules:
 * Create a feature branch and add your changes
