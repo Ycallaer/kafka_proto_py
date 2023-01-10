@@ -20,7 +20,7 @@ def option_parser():
         "--type",
         dest="run_type",
         help="Options are producer_run,whylogs_run, pandasprofile_run",
-        default="pandasprofile_run",
+        default="producer_run",
     )
 
     return parser.parse_args()
