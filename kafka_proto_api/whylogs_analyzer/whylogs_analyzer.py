@@ -6,40 +6,51 @@ from glob import glob
 from functools import reduce
 from google.protobuf.json_format import MessageToDict
 import dataframe_image as dfi
-class WhylogsAnalyzer():
+
+
+class WhylogsAnalyzer:
     def __int__(self):
         print("something")
 
-    def analyze_dataset(self,kafka_consumer: ProtoKafkaConsumer ):
-        consumer=kafka_consumer.get_consumer()
+    def analyze_dataset(self, kafka_consumer: ProtoKafkaConsumer):
+        consumer = kafka_consumer.get_consumer()
         total = 0
         df = pd.DataFrame()
-        with why.logger(mode="rolling", interval=5, when="M", base_name="whylogs-kafka") as logger:
+        with why.logger(
+            mode="rolling", interval=5, when="M", base_name="whylogs-kafka"
+        ) as logger:
             logger.append_writer("local", base_dir="profiles")
             while True:
                 try:
                     # SIGINT can't be handled when polling, limit timeout to 1 second.
-                    msg = consumer.poll(1.0)
-                    if msg is None:
+                    # msg = consumer.poll(1.0)
+                    messages = consumer.consume(num_messages=100, timeout=2)
+                    if messages is None:
                         continue
                     proto_deserializer = kafka_consumer.get_proto_deserializer()
-                    etf = proto_deserializer(msg.value(), SerializationContext(kafka_consumer.get_consumer_topic(), MessageField.VALUE))
-                    dict_obj = MessageToDict(etf)
-                    #print(etf)
+                    etf_list = []
+                    for msg in messages:
+                        etf = proto_deserializer(
+                            msg.value(),
+                            SerializationContext(
+                                kafka_consumer.get_consumer_topic(), MessageField.VALUE
+                            ),
+                        )
+                        dict_obj = MessageToDict(etf)
+                        etf_list.append(dict_obj)
 
-                    #for k, v in dict_obj.items():
-                        #print(f'{k} - {len(v)}')
-                    df = df.append(dict_obj,ignore_index=True)
+                    df = df.append(etf_list, ignore_index=True)
                     logger.log(df)
-                    total += 1
+                    total += 100
 
                     if total > 1500:
+                        # ugly hack for demo purpose
                         print(df)
                         break
                 except KeyboardInterrupt:
                     break
 
-        consumer.close()
+            consumer.close()
         print(df)
         print("analyze")
         profiles_binaries = glob("profiles/whylogs*")
