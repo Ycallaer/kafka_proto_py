@@ -7,3 +7,5 @@ dist/*
 *.iml
 venv/*
 .DS_Store
+*dataset_analysis.html
+*.png

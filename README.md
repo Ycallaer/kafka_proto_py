@@ -36,6 +36,12 @@ The following script needs to be executed:
 .../kafka_proto_py/kafka_proto_api/start_producer.py
 ```
 You will need to set the working directory to the root of the project. 
+The code can run in different modes by supplying the flag `--type`, these 3 types are:
+* producer_run
+* whylogs_run
+* pandasprofile_run
+
+The last 2 types require that the producer has already run and data is in the topics. The goal of the last 2 is to provide data profiling.
 
 ## Running the kafka connector
 The repo also contains an example of a kafka connector under the folder `kafka-connect`.

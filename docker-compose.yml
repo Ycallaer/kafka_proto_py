@@ -181,54 +181,54 @@ services:
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
-  es01:
-    image: ${ELK_DISTRO_REPO}/elasticsearch/elasticsearch:${ELK_DISTRIBUTION_VERSION}
-    container_name: es01
-    environment:
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9200:9200
-      - 9300:9300
+#  es01:
+#    image: ${ELK_DISTRO_REPO}/elasticsearch/elasticsearch:${ELK_DISTRIBUTION_VERSION}
+#    container_name: es01
+#    environment:
+#      - bootstrap.memory_lock=true
+#      - discovery.type=single-node
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
 
-  kib01:
-    image: ${ELK_DISTRO_REPO}/kibana/kibana:${ELK_DISTRIBUTION_VERSION}
-    depends_on:
-      - es01
-    container_name: kib01
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+#  kib01:
+#    image: ${ELK_DISTRO_REPO}/kibana/kibana:${ELK_DISTRIBUTION_VERSION}
+#    depends_on:
+#      - es01
+#    container_name: kib01
+#    ports:
+#      - 5601:5601
+#    environment:
+#      ELASTICSEARCH_URL: http://es01:9200
+#      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
   
-  influxdb:
-    image: ${INFLUXDB_DISTRO_REPO}influxdb:${INFLUXDB_DISTRIBUTION_VERSION}
-    ports:
-      - 18086:8086
-      - 18083:8083
-      - 18090:8090
-    hostname: influxdb
-    container_name: influxdb
-    environment:
-      INFLUXDB_DATA_ENGINE: tsm1
-      INFLUXDB_REPORTING_DISABLED: "false"
-
-  mysqldb:
-    image: ${MYSQL_DISTRIBUTION_REPO}mysql:${MYSQL_DISTRIBUTION_VERSION}
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'mysqldb'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'user_pwd'
-      MYSQL_ROOT_PASSWORD: 'zEqWV1TvO7Lc0MxK33pP'
-    ports:
-      - 3306:3306
+#  influxdb:
+#    image: ${INFLUXDB_DISTRO_REPO}influxdb:${INFLUXDB_DISTRIBUTION_VERSION}
+#    ports:
+#      - 18086:8086
+#      - 18083:8083
+#      - 18090:8090
+#    hostname: influxdb
+#    container_name: influxdb
+#    environment:
+#      INFLUXDB_DATA_ENGINE: tsm1
+#      INFLUXDB_REPORTING_DISABLED: "false"
+#
+#  mysqldb:
+#    image: ${MYSQL_DISTRIBUTION_REPO}mysql:${MYSQL_DISTRIBUTION_VERSION}
+#    restart: always
+#    environment:
+#      MYSQL_DATABASE: 'mysqldb'
+#      MYSQL_USER: 'user'
+#      MYSQL_PASSWORD: 'user_pwd'
+#      MYSQL_ROOT_PASSWORD: 'zEqWV1TvO7Lc0MxK33pP'
+#    ports:
+#      - 3306:3306
 
   # postgressdb:
   #   image: "postgres:11"
