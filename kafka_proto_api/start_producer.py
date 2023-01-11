@@ -20,7 +20,15 @@ def option_parser():
         "--type",
         dest="run_type",
         help="Options are producer_run,whylogs_run, pandasprofile_run",
-        default="producer_run",
+        default="pandasprofile_run",
+    )
+
+    parser.add_option(
+        "-m",
+        "--minimal_profiling",
+        dest="minimal_profiling",
+        help="Boolean if minimal profiling is used when choosing pandasprofile_run",
+        default=True,
     )
 
     return parser.parse_args()
@@ -113,7 +121,7 @@ def main():
         consumer_http_ref = ProtoKafkaConsumer(
             config_env=getConfigForEnv("local_http_ref")
         )
-        analyzer = CustomPandasProfiler()
+        analyzer = CustomPandasProfiler(minimal_profiling=opts.minimal_profiling)
         analyzer.analyze_dataset(consumer)
     else:
         print("Unimplemented run type chosen.")

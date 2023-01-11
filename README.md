@@ -30,18 +30,30 @@ The following technologies will be started:
 * MySql
 * InfluxDB
 
-## Running the python producer
+## Running the python code
 The following script needs to be executed:
 ```python
 .../kafka_proto_py/kafka_proto_api/start_producer.py
 ```
-You will need to set the working directory to the root of the project. 
+You will need to set the working directory to the root of the project.
+
 The code can run in different modes by supplying the flag `--type`, these 3 types are:
 * producer_run
 * whylogs_run
 * pandasprofile_run
 
 The last 2 types require that the producer has already run and data is in the topics. The goal of the last 2 is to provide data profiling.
+
+An other flag is `minimal_profiling` which allows us to control the behaviour of `pandasprofile_run`. By default this is set to true,
+when switched to false, it will a deeper analysis, which requires more time.
+
+### Data profiling in python
+To see if data profiling can be done, 2 additional libraries have been added:
+* [whylogs](https://github.com/whylabs/whylogs)
+* [pandas profiling](https://github.com/ydataai/pandas-profiling)
+
+The idea is to evaluate how much additional useful information they bring to a kafka project if schemas are already enforced.
+By choosing the correct type you can see the output of each file.
 
 ## Running the kafka connector
 The repo also contains an example of a kafka connector under the folder `kafka-connect`.
