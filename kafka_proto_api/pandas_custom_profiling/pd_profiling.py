@@ -45,11 +45,14 @@ class CustomPandasProfiler:
 
         consumer.close()
         if self.is_min_profiling_enabled:
-            profile = ProfileReport(df, title="Pandas Profiling Report",config_file="kafka_proto_api/config/config_profiling_minimal.yml")
+            profile = ProfileReport(
+                df,
+                title="Pandas Minimal Profiling Report",
+                config_file="kafka_proto_api/config/config_profiling_minimal.yml",
+            )
         else:
-            profile = ProfileReport(df, title="Pandas Profiling Report",
-                                    config_file="kafka_proto_api/config/config_profiling_minimal.yml")
+            profile = ProfileReport(df, title="Pandas Profiling Report")
         profile.to_file("dataset_analysis.html")
         json_data = profile.to_json()
         with open("dataset_analysis.json", "w") as outfile:
-           outfile.write(json_data)
+            outfile.write(json_data)
