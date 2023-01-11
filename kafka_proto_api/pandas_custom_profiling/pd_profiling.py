@@ -7,8 +7,9 @@ import logging
 
 
 class CustomPandasProfiler:
-    def __int__(self):
+    def __init__(self, minimal_profiling):
         self.logger = logging.getLogger(__name__)
+        self.is_min_profiling_enabled = minimal_profiling
 
     def analyze_dataset(self, kafka_consumer: ProtoKafkaConsumer) -> None:
         consumer = kafka_consumer.get_consumer()
@@ -43,5 +44,12 @@ class CustomPandasProfiler:
                 break
 
         consumer.close()
-        profile = ProfileReport(df, title="Pandas Profiling Report")
+        if self.is_min_profiling_enabled:
+            profile = ProfileReport(df, title="Pandas Profiling Report",config_file="kafka_proto_api/config/config_profiling_minimal.yml")
+        else:
+            profile = ProfileReport(df, title="Pandas Profiling Report",
+                                    config_file="kafka_proto_api/config/config_profiling_minimal.yml")
         profile.to_file("dataset_analysis.html")
+        json_data = profile.to_json()
+        with open("dataset_analysis.json", "w") as outfile:
+           outfile.write(json_data)
