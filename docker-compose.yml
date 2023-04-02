@@ -230,11 +230,12 @@ services:
 #    ports:
 #      - 3306:3306
 
-  # postgressdb:
-  #   image: "postgres:11"
-  #   container_name: "postgress_kafka"
-  #   environment:
-  #     POSTGRES_HOST_AUTH_METHOD: "trust"
-  #   ports:
-  #     - "54320:5432"
-
+  postgressdb:
+     image: "postgres:11"
+     container_name: "postgress_kafka"
+     environment:
+       POSTGRES_HOST_AUTH_METHOD: "trust"
+     ports:
+       - "54320:5432"
+     volumes:
+       - ./sql_creation.sql:/docker-entrypoint-initdb.d/db.sql
